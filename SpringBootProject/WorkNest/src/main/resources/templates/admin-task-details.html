@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Task Details</title></head>
+<body>
+<a href="/admin/dashboard">← Back</a>
+<h2 th:text="${task.title}">Task</h2>
+<p><b>Assignee:</b> <span th:text="${task.assignee.username}">user</span></p>
+<p><b>Status:</b> <span th:text="${task.status}">PENDING</span></p>
+<p><b>Start:</b> <span th:text="${task.startDate}">2025-01-01</span></p>
+<p><b>Due:</b> <span th:text="${task.dueDate}">2025-01-02</span></p>
+<p><b>Description:</b> <span th:text="${task.description}">desc</span></p>
+
+<h3>Comments</h3>
+<ul>
+    <li th:each="c : ${comments}">
+        <b th:text="${c.author.username}">user</b>:
+        <span th:text="${c.content}">content</span>
+        <em th:text="${#temporals.format(c.createdAt, 'yyyy-MM-dd HH:mm')}">time</em>
+    </li>
+</ul>
+</body>
+</html>

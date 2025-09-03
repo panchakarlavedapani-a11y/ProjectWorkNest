@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Team Formation</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; margin:20px; }
+    table { width:100%; border-collapse: collapse; margin-bottom:16px; }
+    th, td { padding:8px; border:1px solid #ddd; text-align:left; }
+    .card { background:#fff; padding:12px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.08); }
+    .muted { color:#666; font-size:0.9em; }
+  </style>
+</head>
+<body>
+  <a href="/user/dashboard">← Back to Dashboard</a>
+  <h2 th:text="'Team Formation — ' + ${task.title}">Team Formation</h2>
+
+  <div class="card">
+    <h3>My Part</h3>
+    <p><b>You:</b> <span th:text="${me.username}">me</span></p>
+    <form th:action="@{|/user/team/${task.id}/parts|}" method="post">
+      <input type="text" name="description" placeholder="Describe the part you will take (e.g., Backend API)" required style="width:60%" />
+      <button type="submit">Add My Part</button>
+    </form>
+  </div>
+
+  <div style="height:16px;"></div>
+
+  <div class="card">
+    <h3>Team Parts & Status</h3>
+    <table>
+      <thead><tr><th>Member</th><th>Part</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr th:each="p : ${parts}">
+          <td th:text="${p.user.username}">user</td>
+          <td th:text="${p.description}">description</td>
+          <td th:text="${p.status}">PENDING</td>
+          <td>
+            <div th:if="${p.user.id == me.id}">
+              <form th:action="@{/user/team/parts/{id}/status(id=${p.id})}" method="post" style="display:inline">
+                <select name="status">
+                  <option th:selected="${p.status.name() == 'PENDING'}" value="PENDING">Pending</option>
+                  <option th:selected="${p.status.name() == 'IN_PROGRESS'}" value="IN_PROGRESS">In Progress</option>
+                  <option th:selected="${p.status.name() == 'COMPLETED'}" value="COMPLETED">Completed</option>
+                </select>
+                <input type="hidden" name="taskId" th:value="${task.id}" />
+                <button type="submit">Update</button>
+              </form>
+            </div>
+            <div th:unless="${p.user.id == me.id}" class="muted">No actions</div>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(parts)}"><td colspan="4">No parts defined yet.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="height:16px;"></div>
+
+  <div class="card">
+    <h3>Team Comments</h3>
+    <ul>
+      <li th:each="c : ${comments}">
+        <b th:text="${c.author.username}">user</b>: <span th:text="${c.content}">text</span>
+        <span class="muted" th:text="${#temporals.format(c.createdAt,'yyyy-MM-dd HH:mm')}">time</span>
+      </li>
+      <li th:if="${#lists.isEmpty(comments)}">No comments yet.</li>
+    </ul>
+  </div>
+
+</body>
+</html>

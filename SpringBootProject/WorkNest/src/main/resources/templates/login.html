@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Login</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: rgb(0, 64, 128);
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    form {
+      background-color: #f0fff0;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 350px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      color: #1e3c72;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    label {
+      margin-top: 1rem;
+      color: #1e3c72;
+      font-weight: 500;
+    }
+
+    input {
+      padding: 0.6rem;
+      margin-top: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    button {
+      margin-top: 1.5rem;
+      padding: 0.8rem;
+      background-color: #1e3c72;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #16315e;
+    }
+
+    p {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    a {
+      color: #1e3c72;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <form action="/login" method="post">
+    <h2><i class="fas fa-user-lock"></i>Login</h2>
+
+    <label for="username">Username:</label>
+    <input type="text" name="username" id="username" required/>
+
+    <label for="password">Password:</label>
+    <input type="password" name="password" id="password" required/>
+
+    <button type="submit"><i class="fas fa-right-to-bracket"></i> Login</button>
+
+    <p style="color:red;" th:text="${error}"></p>
+    <p><a href="/register">New User? Register here</a></p>
+  </form>
+</body>
+</html>

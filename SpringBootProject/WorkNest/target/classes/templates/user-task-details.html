@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Task Details</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background-color: #f4f6f9;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(90deg, #1e3c72, #2a5298);
+      color: #fff;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      font-size: 20px;
+      margin: 0;
+    }
+    header nav a {
+      color: #fff;
+      text-decoration: none;
+      margin-left: 20px;
+      font-weight: 500;
+    }
+    header nav a:hover { text-decoration: underline; }
+
+    /* Footer */
+    footer {
+      margin-top: auto;
+      background: #1e3c72;
+      color: #fff;
+      text-align: center;
+      padding: 12px;
+      font-size: 14px;
+    }
+
+    /* Main content */
+    main {
+      flex: 1;
+      padding: 20px;
+    }
+
+    h2 { color: #1e3c72; margin-bottom: 10px; }
+    h3, h4 { margin: 0 0 15px 0; color: #2a5298; }
+
+    /* Container flex */
+    .container {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px;
+      align-items: flex-start;
+    }
+    .left-panel, .right-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .details, .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+
+    p { margin: 10px 0; }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .badge.PENDING { background-color: #fff3cd; color: #856404; }
+    .badge.IN_PROGRESS { background-color: #cce5ff; color: #004085; }
+    .badge.COMPLETED { background-color: #d4edda; color: #155724; }
+    .badge.DELAYED { background-color: #f8d7da; color: #721c24; }
+
+    /* Forms */
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    form select, textarea, button {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    textarea { resize: vertical; min-height: 80px; }
+    button {
+      background-color: #2a5298;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      border: none;
+    }
+    button:hover { background-color: #1e3c72; }
+
+    /* Comments list */
+    ul { list-style: none; padding-left: 0; margin-top: 0; }
+    li {
+      background: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      margin-bottom: 10px;
+    }
+    li small {
+      display: block;
+      opacity: 0.6;
+      margin-top: 5px;
+      font-size: 12px;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .container { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <h1>Task Manager</h1>
+    <nav>
+      <a th:href="@{/user/dashboard}">Back to Dashboard</a>
+      <a th:href="@{/logout}">Logout</a>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <h2 th:text="${task.title}">Task</h2>
+
+    <div class="container">
+      <!-- Left side -->
+      <div class="left-panel">
+        <div class="details">
+          <p>
+            <b>Status:</b>
+            <span class="badge COMPLETED" th:if="${task.status.name() == 'COMPLETED'}" th:text="${task.status}"></span>
+            <span class="badge DELAYED" th:if="${task.status.name() != 'COMPLETED' and task.dueDate != null and task.dueDate.isBefore(today)}">DELAYED</span>
+            <span class="badge" th:classappend="${task.status.name()}" th:if="${task.status.name() != 'COMPLETED' and (task.dueDate == null or !task.dueDate.isBefore(today))}" th:text="${task.status}"></span>
+          </p>
+          <p><b>Start:</b> <span th:text="${task.startDate}"></span></p>
+          <p><b>Due:</b> <span th:text="${task.dueDate}"></span></p>
+          <p>
+            <b>Description:</b>
+            <span th:if="${task.description != null and !#strings.isEmpty(task.description)}" th:text="${task.description}"></span>
+            <span th:if="${task.description == null or #strings.isEmpty(task.description)}" style="opacity:0.7;">(no description)</span>
+          </p>
+          <p>
+            <b>Assignees:</b>
+            <span th:if="${#lists.isEmpty(task.assignees)}" style="opacity:0.7;">No assignees</span>
+            <span th:each="a, iterStat : ${task.assignees}">
+              <span th:text="${a.username}"></span>
+              <span th:if="${!iterStat.last}">, </span>
+            </span>
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Update Status</h3>
+          <form th:action="@{|/user/tasks/${task.id}/status|}" method="post">
+            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <select name="status">
+              <option th:selected="${task.status.name() == 'PENDING'}" value="PENDING">PENDING</option>
+              <option th:selected="${task.status.name() == 'IN_PROGRESS'}" value="IN_PROGRESS">IN PROGRESS</option>
+              <option th:selected="${task.status.name() == 'COMPLETED'}" value="COMPLETED">COMPLETED</option>
+              <option th:selected="${task.status.name() == 'DELAYED'}" value="DELAYED">DELAYED</option>
+            </select>
+            <button type="submit">Save</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Right side -->
+      <div class="right-panel">
+        <div class="card">
+          <h3>Comments</h3>
+          <ul>
+            <li th:each="c : ${comments}">
+              <b th:text="${c.author.username}">user</b>: 
+              <span th:text="${c.content}">content</span>
+              <small th:text="${#temporals.format(c.createdAt, 'yyyy-MM-dd HH:mm')}">time</small>
+            </li>
+            <li th:if="${#lists.isEmpty(comments)}" style="opacity:0.7;">No comments yet.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h4>Add a comment</h4>
+          <form th:action="@{|/user/tasks/${task.id}/comments|}" method="post">
+            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <textarea name="content" placeholder="Write a comment..." required></textarea>
+            <button type="submit">Post</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 Task Manager. All rights reserved.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>User Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background-color: #f4f6f9;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(to right, #1e3c72, #2a5298);
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    header nav a {
+      color: white;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    header nav a:hover {
+      text-decoration: underline;
+    }
+
+    /* Main content */
+    main {
+      flex: 1;
+      padding: 20px;
+    }
+
+    /* Cards */
+    .cards {
+      display: flex;
+      gap: 16px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      padding: 18px;
+      border-radius: 10px;
+      background: white;
+      min-width: 140px;
+      text-align: center;
+      font-weight: 600;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+      background: #f8fbff;
+    }
+
+    /* Table */
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 15px 0;
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    th, td {
+      border: 1px solid #eee;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f1f5fb;
+      font-weight: bold;
+      color: #2a5298;
+    }
+
+    tr:hover td {
+      background-color: #f9fbff;
+    }
+
+    /* Status badges */
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .badge.PENDING { background-color: #fff3cd; color: #856404; }
+    .badge.IN_PROGRESS { background-color: #cce5ff; color: #004085; }
+    .badge.COMPLETED { background-color: #d4edda; color: #155724; }
+    .badge.DELAYED { background-color: #f8d7da; color: #721c24; }
+
+    h3 {
+      margin-top: 25px;
+      color: #1e3c72;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 12px;
+      background: #1e3c72;
+      color: white;
+      font-size: 13px;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <!-- Header -->
+<header>
+  <div>
+    <h1>Task Management</h1>
+    <p style="margin: 4px 0 0; font-size:14px; opacity:0.9;" th:text="'Hello, ' + ${me.username}">Hello, User</p>
+  </div>
+  <nav>
+  
+    <a th:href="@{/logout}">Logout</a>
+  </nav>
+</header>
+
+
+  <!-- Main content -->
+  <main>
+    <!-- Quick stats -->
+    <div class="cards">
+      <div class="card">Pending: <b th:text="${countPending}">0</b></div>
+      <div class="card">In Progress: <b th:text="${countInProgress}">0</b></div>
+      <div class="card">Completed: <b th:text="${countCompleted}">0</b></div>
+      <div class="card">Delayed: <b th:text="${countDelayed}">0</b></div>
+    </div>
+
+    <!-- My tasks -->
+    <h3>My Tasks</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Status</th>
+          <th>Start</th>
+          <th>Due</th>
+          <th>Open</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="t : ${tasks}">
+          <td th:text="${t.title}">Title</td>
+          <td><span class="badge" th:text="${t.status}" th:classappend="${t.status}">PENDING</span></td>
+          <td th:text="${t.startDate}">2025-01-01</td>
+          <td th:text="${t.dueDate}">2025-01-02</td>\n              <td><a th:href="@{|/user/team/${t.id}|}">Team Formation</a></td>
+          <td><a th:href="@{|/user/tasks/${t.id}|}">View</a></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(tasks)}">
+          <td colspan="5" style="text-align:center; opacity:.7;">No tasks assigned yet.</td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 Task Management System. All rights reserved.
+  </footer>
+</body>
+</html>

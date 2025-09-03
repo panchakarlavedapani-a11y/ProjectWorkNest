@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>WorkNest Home</title>
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Left Panel */
+    nav {
+      width: 25%;
+      background-color:#A9A9A9;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #fff;
+      background-color: #1e3c72;
+      padding: 1rem 2rem;
+      margin: 1rem 0;
+      border-radius: 30px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255,255,255,0.2);
+      transition: left 0.4s ease;
+    }
+
+    nav a:hover::after {
+      left: 0;
+    }
+
+    nav a:hover {
+      background-color: #3f6f6f;
+      transform: scale(1.05);
+    }
+
+    nav a i {
+      font-size: 1.2rem;
+      transition: transform 0.3s ease;
+    }
+
+    nav a:hover i {
+      transform: scale(1.2);
+    }
+
+    /* Right Panel */
+    header {
+      width: 75%;
+      background: url('/images/img.jpg') center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      color: black;
+      text-shadow: 1px 1px 4px #000;
+    }
+
+    header h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    header p {
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a th:href="@{/login}"><i class="fas fa-right-to-bracket"></i> Login</a>
+    <a th:href="@{/register}"><i class="fas fa-user-plus"></i> Register</a>
+  </nav>
+  <header>
+    <h1>Welcome to WorkNest</h1>
+    <!-- <p>Collaborate. Track. Manage your tasks efficiently.</p> -->
+  </header>
+</body>
+</html>
